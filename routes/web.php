@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ESP32Controller;
+use App\Http\Controllers\SensorController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,8 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('Monitoring');
 });
+Route::get('/bacasuhu', [SensorController::class, 'bacasuhu']);
+Route::get('/bacakelembapan', [SensorController::class, 'bacakelembapan']);
+Route::get('/simpan/{nilaisuhu}/{nilaikelembapan}', [SensorController::class, 'simpansensor']);
 
 Route::get('/on', [ESP32Controller::class, 'turnOn']);
 Route::get('/off', [ESP32Controller::class, 'turnOff']);
