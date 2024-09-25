@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Http;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ESP32Controller extends Controller
 {
-    protected $esp32Ip = 'http://192.168.100.31:8080'; // ganti dengan IP ESP32 Anda
+    protected $esp32Ip = 'http://192.168.137.63:80'; // ganti dengan IP ESP32 Anda
 
     public function turnOn()
     {
+    
         $response = Http::get("{$this->esp32Ip}/H");
 
         return response()->json([

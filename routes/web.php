@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('Monitoring');
 });
+Route::get('/lamp', function() {
+    return view('index');
+});
 Route::get('/bacasuhu', [SensorController::class, 'bacasuhu']);
 Route::get('/bacakelembapan', [SensorController::class, 'bacakelembapan']);
 Route::get('/simpan/{nilaisuhu}/{nilaikelembapan}', [SensorController::class, 'simpansensor']);

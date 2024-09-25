@@ -1,19 +1,19 @@
-#include <WiFi.h>
-#include <WebServer.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h> // Tambahkan library ini
 
 // Set your WiFi credentials
-const char* ssid = "Patungan Yaa";
-const char* password = "HanyaRindu";
+const char* ssid = "Iman_sport";
+const char* password = "123456789";
 
 // Create a web server on port 80
-WebServer server(8080);
+ESP8266WebServer espServer(80); // Ubah ini menjadi ESP8266WebServer
 
 // Pin to control
 int ledPin = 2;
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(2, OUTPUT);
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT); // gunakan variabel ledPin
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -25,21 +25,21 @@ void setup() {
   Serial.println(WiFi.localIP()); // Get the IP address
 
   // Define the routes
-  server.on("/H", []() {
-    digitalWrite(2, HIGH);
-    server.send(200, "text/plain", "LED ON");
+  espServer.on("/L", []() {
+    digitalWrite(ledPin, HIGH);
+    espServer.send(200, "text/plain", "LED ON");
   });
 
-  server.on("/L", []() {
-    digitalWrite(2, LOW);
-    server.send(200, "text/plain", "LED OFF");
+  espServer.on("/H", []() {
+    digitalWrite(ledPin, LOW);
+    espServer.send(200, "text/plain", "LED OFF");
   });
 
   // Start the server
-  server.begin();
+  espServer.begin();
 }
 
 void loop() {
   // Handle incoming requests
-  server.handleClient();
+  espServer.handleClient();
 }
