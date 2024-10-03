@@ -6,14 +6,17 @@
 #define DHTPIN 5
 #define DHTTYPE DHT11
 #define pinLED 4
+#define KELEMBAPAN_MIN 30
+#define WAKTU_POMPA 5000 
+#define irPin 12
 
 DHT dht(DHTPIN, DHTTYPE);
-ESP8266WebServer espServer(80);
+ESP8266WebServer espServer(8080);
 
-const char* ssid = "Iman_sport";
-const char* password = "123456789";
+const char* ssid = "Patungan Yaa";
+const char* password = "HanyaRindu";
 
-const char* server = "192.168.120.8";
+const char* server = "192.168.100.115";
 const int sensorPin = 3;
 int sensorPinTnh = A0;
 const int relayPin = 0;
@@ -26,7 +29,7 @@ void setup() {
   pinMode(sensorPin, INPUT);
   pinMode(pinLED, OUTPUT);
   pinMode(relayPin, OUTPUT);
-
+  pinMode(irPin, OUTPUT);
 
   digitalWrite(relayPin, HIGH);
   WiFi.hostname("NodeMCU");
@@ -34,8 +37,10 @@ void setup() {
 
   while(WiFi.status() != WL_CONNECTED)
   {
+    digitalWrite(pinLED, HIGH);
+    delay(3000);
     digitalWrite(pinLED, LOW);
-    delay(500);
+
   }
   Serial.println("Connected to WiFi");
   Serial.println(WiFi.localIP()); // Get the IP address
@@ -51,6 +56,16 @@ void setup() {
     espServer.send(200, "text/plain", "LED OFF");
   });
 
+  espServer.on("/wOn", []() {
+    digitalWrite(relayPin, LOW);
+    espServer.send(200, "text/plain", "Water On");
+  });
+
+  espServer.on("/wOff", []() {
+    digitalWrite(relayPin, HIGH);
+    espServer.send(200, "text/plain", "Water Off");
+  });
+
   // Serial.println("Koneksi berhasil");
   // dht.begin();
   // Start the server
@@ -60,24 +75,35 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   
-    digitalWrite(relayPin, LOW); // LOW mengaktifkan relay (menghubungkan NO)
-  delay(5000); // Pompa hidup selama 5 detik
+  //   digitalWrite(relayPin, LOW); // LOW mengaktifkan relay (menghubungkan NO)
+  // delay(5000); // Pompa hidup selama 5 detik
   
 
-    digitalWrite(relayPin, HIGH); // HIGH mematikan relay/
-  delay(5000); // Pompa mati selama 5 detik
+  //   digitalWrite(relayPin, HIGH); // HIGH mematikan relay/
+  // delay(5000); // Pompa mati selama 5 detik
   int sensorValue = digitalRead(sensorPin);
   int sensorValueTnh = analogRead(sensorPinTnh);
   float kelembapanTnh = map(sensorValueTnh, 1023, 0, 0, 100);
 
+  // if (kelembapanTnh < KELEMBAPAN_MIN) {
+  //   Serial.println("Kelembapan tanah rendah. Menyalakan pompa...");
+  //   digitalWrite(relayPin, LOW);  // LOW mengaktifkan relay
+  //   delay(WAKTU_POMPA);           // Pompa hidup selama 5 detik
+  //   digitalWrite(relayPin, HIGH); // Matikan relay
+  //   Serial.println("Pompa dimatikan.");
+  // }
+
   Serial.print("Sensor Output: ");
   Serial.println(sensorValue);
 
-  // if (sensorValue == HIGH) {
-  //   digitalWrite(pinLED, HIGH); // Nyalakan LED
-  // } else {
-  //   digitalWrite(pinLED, LOW);  // Matikan LED
-  // }
+ int irValue = digitalRead(irPin);  // Baca nilai sensor infrared
+  if (irValue == LOW) {
+  Serial.println("Objek terdeteksi");
+  digitalWrite(pinLED, HIGH);  // Nyalakan LED jika objek terdeteksi
+} else {
+  Serial.println("Tidak ada objek");
+  digitalWrite(pinLED, LOW);   // Matikan LED jika tidak ada objek
+}
 
   float temp = dht.readTemperature();
   int hum = dht.readHumidity();
@@ -87,7 +113,7 @@ void loop() {
   Serial.println("Kelembapan Tanah : " + String(kelembapanTnh));
   
   WiFiClient wClient;
-  const int httpPort = 80;
+  const int httpPort = 8080;
   if(!wClient.connect(server, httpPort)){
     Serial.println("Gagal konek web");
     return;
