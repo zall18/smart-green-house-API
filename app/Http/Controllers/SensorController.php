@@ -17,11 +17,21 @@ class SensorController extends Controller
         return view('bacakelembapan',['nilaisensor' => $sensor]);
     }
 
+    public function bacakelembapantnh(){
+        $sensor = MSensor::select('*')->get();
+        return view('bacakelembapantanah',['nilaisensor' => $sensor]);
+    }
+
     public function simpansensor()
     {
+        // MSensor::where('id', 1)->update([
+        //     'suhu' => request()->nilaisuhu,
+        //     'kelembapan' => request()->nilaikelembapan
+        // ]);
         MSensor::where('id', 1)->update([
             'suhu' => request()->nilaisuhu,
-            'kelembapan' => request()->nilaikelembapan
+            'kelembapan' => request()->nilaikelembapan,
+            'kelembapantnh' => request()->nilaikelembapantnh
         ]);
     }
 }

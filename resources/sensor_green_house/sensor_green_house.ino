@@ -15,6 +15,7 @@ const char* password = "123456789";
 
 const char* server = "192.168.120.8";
 const int sensorPin = 3;
+int sensorPinTnh = A0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -55,8 +56,11 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   
-
+  
   int sensorValue = digitalRead(sensorPin);
+  int sensorValueTnh = analogRead(sensorPinTnh);
+  float kelembapanTnh = map(sensorValueTnh, 1023, 0, 0, 100);
+
   Serial.print("Sensor Output: ");
   Serial.println(sensorValue);
 
@@ -71,6 +75,7 @@ void loop() {
 
   Serial.println("Suhu : " + String(temp));
   Serial.println("Kelembapan : " + String(hum));
+  Serial.println("Kelembapan Tanah : " + String(kelembapanTnh));
   
   WiFiClient wClient;
   const int httpPort = 80;
@@ -81,7 +86,7 @@ void loop() {
 
   String url;
   HTTPClient http;
-  url = "http://" + String(server) + "/smart-green-house-web/public/simpan/" + String(temp) + "/" + String(hum);
+  url = "http://" + String(server) + "/smart-green-house-web/public/simpan/" + String(temp) + "/" + String(hum) + "/" + String(kelembapanTnh);
   http.begin(wClient, url);
   http.GET();
   http.end();
