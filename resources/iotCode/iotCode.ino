@@ -11,6 +11,8 @@ ESP8266WebServer espServer(80); // Ubah ini menjadi ESP8266WebServer
 // Pin to control
 int ledPin = 2;
 
+
+
 void setup() {
   Serial.begin(9600);
   pinMode(ledPin, OUTPUT); // gunakan variabel ledPin

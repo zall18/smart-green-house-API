@@ -16,6 +16,7 @@ const char* password = "123456789";
 const char* server = "192.168.120.8";
 const int sensorPin = 3;
 int sensorPinTnh = A0;
+const int relayPin = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -24,7 +25,10 @@ void setup() {
 
   pinMode(sensorPin, INPUT);
   pinMode(pinLED, OUTPUT);
+  pinMode(relayPin, OUTPUT);
 
+
+  digitalWrite(relayPin, HIGH);
   WiFi.hostname("NodeMCU");
   WiFi.begin(ssid, password);
 
@@ -56,7 +60,12 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   
+    digitalWrite(relayPin, LOW); // LOW mengaktifkan relay (menghubungkan NO)
+  delay(5000); // Pompa hidup selama 5 detik
   
+
+    digitalWrite(relayPin, HIGH); // HIGH mematikan relay/
+  delay(5000); // Pompa mati selama 5 detik
   int sensorValue = digitalRead(sensorPin);
   int sensorValueTnh = analogRead(sensorPinTnh);
   float kelembapanTnh = map(sensorValueTnh, 1023, 0, 0, 100);
