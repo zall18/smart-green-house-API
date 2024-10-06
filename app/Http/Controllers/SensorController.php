@@ -7,19 +7,28 @@ use App\Models\MSensor;
 
 class SensorController extends Controller
 {
-    public function bacasuhu(){
+    public function bacasuhu()
+    {
         $sensor = MSensor::select('*')->get();
-        return view('bacasuhu',['nilaisensor' => $sensor]);
+        return response()->json([
+            'temperature' => $sensor[0]->suhu
+        ]);
     }
 
-    public function bacakelembapan(){
+    public function bacakelembapan()
+    {
         $sensor = MSensor::select('*')->get();
-        return view('bacakelembapan',['nilaisensor' => $sensor]);
+        return response()->json([
+            'humidity' => $sensor[0]->kelembapan
+        ]);
     }
 
-    public function bacakelembapantnh(){
+    public function bacakelembapantnh()
+    {
         $sensor = MSensor::select('*')->get();
-        return view('bacakelembapantanah',['nilaisensor' => $sensor]);
+        return response()->json([
+            'soil_mosture' => $sensor[0]->kelembapanTnh
+        ]);
     }
 
     public function simpansensor()
